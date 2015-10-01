@@ -14,24 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <QStringList>
-#include <QString>
-#include <QIcon>
-#include "utils/search/iindexable.h"
+#pragma once
+#include <QObject>
+#include <QRunnable>
+#include <QMutex>
 
 namespace Applications {
+class Extension;
 
-struct App final : public IIndexable
+class Indexer final : public QObject,  public QRunnable
 {
-    QStringList aliases() const override {
-        return QStringList() << name << altName << exec;
-    }
+    Q_OBJECT
+public:
+    Indexer(Extension *ext)
+        : _extension(ext), _abort(false) {}
+    void run() override;
+    void abort(){_abort=true;}
 
-    QString        path;
-    QString        name;
-    QString        altName;
-    QString        exec;
-    QIcon          icon;
-    mutable ushort usage;
+private:
+    Extension *_extension;
+    bool _abort;
+
+signals:
+    void statusInfo(const QString&);
 };
+
 }
