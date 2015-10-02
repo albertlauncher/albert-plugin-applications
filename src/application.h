@@ -21,7 +21,6 @@
 using std::vector;
 #include "utils/search/iindexable.h"
 #include "interfaces/baseobjects.h"
-class IExtension;
 
 namespace Applications{
 
