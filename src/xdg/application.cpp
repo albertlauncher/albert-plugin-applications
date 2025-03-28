@@ -3,6 +3,7 @@
 #include "application.h"
 #include "desktopentryparser.h"
 #include "plugin.h"
+#include <QFileInfo>
 #include <albert/albert.h>
 using namespace std;
 using namespace albert;

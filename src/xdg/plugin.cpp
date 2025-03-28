@@ -1,14 +1,16 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #include "application.h"
 #include "plugin.h"
 #include "terminal.h"
 #include "ui_configwidget.h"
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QWidget>
-using namespace std;
 using namespace albert;
+using namespace std;
 
 static QString normalizedContainerCommand(const QStringList &Exec)
 {
