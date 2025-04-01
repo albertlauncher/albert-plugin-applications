@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
-find_package(Albert REQUIRED)
+project(applications VERSION 14.2)
 
-project(applications VERSION 14.1)
+find_package(Albert REQUIRED)
 
 file(GLOB_RECURSE I18N_SOURCES src/*)
 
