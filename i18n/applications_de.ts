@@ -42,7 +42,7 @@
     <name>PluginBase</name>
     <message>
         <source>Report missing terminals &lt;a href=&quot;%1&quot;&gt;here&lt;/a&gt;.</source>
-        <translation>Fehlend Terminals &lt;a href=&quot;%1&quot;&gt;melden&lt;/a&gt;.</translation>
+        <translation>Fehlende Terminals &lt;a href=&quot;%1&quot;&gt;melden&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>No terminal available.</source>
