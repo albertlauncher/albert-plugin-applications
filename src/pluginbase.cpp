@@ -7,6 +7,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QSignalBlocker>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <albert/iconprovider.h>
@@ -28,10 +29,14 @@ void PluginBase::commonInitialize(unique_ptr<QSettings> &s)
     restore_split_camel_case(s);
     restore_use_acronyms(s);
 
-    for (auto f : { &PluginBase::use_non_localized_name_changed,
-                    &PluginBase::split_camel_case_changed,
-                    &PluginBase::use_acronyms_changed })
-        connect(this, f, this, &PluginBase::updateIndexItems);
+    // Requires full scan
+    connect(this, &PluginBase::use_non_localized_name_changed,
+            this, &PluginBase::updateIndexItems);
+
+    // Require only to rebuild the index
+    for (auto f : {&PluginBase::split_camel_case_changed,
+                   &PluginBase::use_acronyms_changed})
+        connect(this, f, this, [this]{ setIndexItems(buildIndexItems()); });
 }
 
 void PluginBase::setUserTerminalFromConfig()
@@ -70,6 +75,7 @@ QWidget *PluginBase::createTerminalFormWidget()
 
     auto updateTerminalsCheckBox = [this, cb]
     {
+        QSignalBlocker block(cb);
         cb->clear();
 
         auto sorted_terminals = terminals;
@@ -98,6 +104,7 @@ QWidget *PluginBase::createTerminalFormWidget()
         {
             terminal = *it;
             settings()->setValue(CFG_TERM, term_id);
+            DEBG << "Terminal set to" << term_id;
         }
         else
             WARN << QString("Selected terminal '%1' vanished.").arg(term_id);
@@ -158,7 +165,7 @@ vector<IndexItem> PluginBase::buildIndexItems() const
             if (use_acronyms_)
             {
                 QString acronym;
-                for (const auto &w : ccs)
+                for (const auto &w : as_const(ccs))
                     if (w.size())
                         acronym.append(w[0]);
 
