@@ -1,4 +1,4 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #include "pluginbase.h"
 #include "terminal.h"
@@ -13,6 +13,7 @@
 #include <albert/iconprovider.h>
 #include <albert/indexitem.h>
 #include <albert/logging.h>
+#include <albert/widgets.h>
 using namespace albert;
 using namespace std;
 ALBERT_LOGGING_CATEGORY("apps")
@@ -129,15 +130,27 @@ void PluginBase::addBaseConfig(QFormLayout *l)
 {
     auto *cb = new QCheckBox;
     l->addRow(tr("Use non-localized name"), cb);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, use_non_localized_name, cb);
+    albert::util::widgets::bind(cb,
+                                this,
+                                &PluginBase::use_non_localized_name,
+                                &PluginBase::set_use_non_localized_name,
+                                &PluginBase::use_non_localized_name_changed);
 
     cb = new QCheckBox;
     l->addRow(tr("Split CamelCase words (medial capital)"), cb);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, split_camel_case, cb);
+    albert::util::widgets::bind(cb,
+                                this,
+                                &PluginBase::split_camel_case,
+                                &PluginBase::set_split_camel_case,
+                                &PluginBase::split_camel_case_changed);
 
     cb = new QCheckBox;
     l->addRow(tr("Use acronyms"), cb);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, use_acronyms, cb);
+    albert::util::widgets::bind(cb,
+                                this,
+                                &PluginBase::use_acronyms,
+                                &PluginBase::set_use_acronyms,
+                                &PluginBase::use_acronyms_changed);
 
     l->addRow(tr("Terminal"), createTerminalFormWidget());
 }
