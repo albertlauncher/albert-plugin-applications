@@ -13,9 +13,10 @@
 #include <albert/iconprovider.h>
 #include <albert/indexitem.h>
 #include <albert/logging.h>
-#include <albert/widgets.h>
+#include <albert/widgetsutil.h>
 using namespace albert;
 using namespace std;
+using namespace util;
 ALBERT_LOGGING_CATEGORY("apps")
 
 static const char* CFG_TERM = "terminal";
@@ -86,7 +87,7 @@ QWidget *PluginBase::createTerminalFormWidget()
         for (uint i = 0; i < sorted_terminals.size(); ++i)
         {
             const auto t = sorted_terminals.at(i);
-            cb->addItem(albert::iconFromUrls(t->iconUrls()), t->name(), t->id());
+            cb->addItem(iconFromUrls(t->iconUrls()), t->name(), t->id());
             cb->setItemData(i, t->id(), Qt::ToolTipRole);
             if (t->id() == terminal->id())  // is current
                 cb->setCurrentIndex(i);
@@ -130,27 +131,27 @@ void PluginBase::addBaseConfig(QFormLayout *l)
 {
     auto *cb = new QCheckBox;
     l->addRow(tr("Use non-localized name"), cb);
-    albert::util::widgets::bind(cb,
-                                this,
-                                &PluginBase::use_non_localized_name,
-                                &PluginBase::set_use_non_localized_name,
-                                &PluginBase::use_non_localized_name_changed);
+    bind(cb,
+         this,
+         &PluginBase::use_non_localized_name,
+         &PluginBase::set_use_non_localized_name,
+         &PluginBase::use_non_localized_name_changed);
 
     cb = new QCheckBox;
     l->addRow(tr("Split CamelCase words (medial capital)"), cb);
-    albert::util::widgets::bind(cb,
-                                this,
-                                &PluginBase::split_camel_case,
-                                &PluginBase::set_split_camel_case,
-                                &PluginBase::split_camel_case_changed);
+    bind(cb,
+         this,
+         &PluginBase::split_camel_case,
+         &PluginBase::set_split_camel_case,
+         &PluginBase::split_camel_case_changed);
 
     cb = new QCheckBox;
     l->addRow(tr("Use acronyms"), cb);
-    albert::util::widgets::bind(cb,
-                                this,
-                                &PluginBase::use_acronyms,
-                                &PluginBase::set_use_acronyms,
-                                &PluginBase::use_acronyms_changed);
+    bind(cb,
+         this,
+         &PluginBase::use_acronyms,
+         &PluginBase::set_use_acronyms,
+         &PluginBase::use_acronyms_changed);
 
     l->addRow(tr("Terminal"), createTerminalFormWidget());
 }

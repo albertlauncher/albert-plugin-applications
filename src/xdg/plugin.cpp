@@ -9,6 +9,8 @@
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QWidget>
+#include <albert/widgetsutil.h>
+using namespace albert::util;
 using namespace albert;
 using namespace std;
 
@@ -265,10 +267,25 @@ QWidget *Plugin::buildConfigWidget()
     Ui::ConfigWidget ui;
     ui.setupUi(widget);
 
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, ignore_show_in_keys, ui.checkBox_ignoreShowInKeys);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, use_exec, ui.checkBox_useExec);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, use_generic_name, ui.checkBox_useGenericName);
-    ALBERT_PROPERTY_CONNECT_CHECKBOX(this, use_keywords, ui.checkBox_useKeywords);
+    bind(ui.checkBox_ignoreShowInKeys,
+         this,
+         &Plugin::ignore_show_in_keys,
+         &Plugin::set_ignore_show_in_keys);
+
+    bind(ui.checkBox_useExec,
+         this,
+         &Plugin::use_exec,
+         &Plugin::set_use_exec);
+
+    bind(ui.checkBox_useGenericName,
+         this,
+         &Plugin::use_generic_name,
+         &Plugin::set_use_generic_name);
+
+    bind(ui.checkBox_useKeywords,
+         this,
+         &Plugin::use_keywords,
+         &Plugin::set_use_keywords);
 
     addBaseConfig(ui.formLayout);
 

@@ -14,7 +14,7 @@ class Terminal;
 class QFormLayout;
 
 class PluginBase : public albert::ExtensionPlugin,
-                   public albert::IndexQueryHandler,
+                   public albert::util::IndexQueryHandler,
                    public applications::Plugin
 {
     Q_OBJECT
@@ -35,11 +35,11 @@ protected:
     void setUserTerminalFromConfig();
     QWidget *createTerminalFormWidget();
     void addBaseConfig(QFormLayout*);
-    std::vector<albert::IndexItem> buildIndexItems() const;
+    std::vector<albert::util::IndexItem> buildIndexItems() const;
     static QStringList camelCaseSplit(const QString &s);
 
     QFileSystemWatcher fs_watcher;
-    albert::BackgroundExecutor<std::vector<std::shared_ptr<applications::Application>>> indexer;
+    albert::util::BackgroundExecutor<std::vector<std::shared_ptr<applications::Application>>> indexer;
     std::vector<std::shared_ptr<applications::Application>> applications;
     std::vector<Terminal*> terminals;
     Terminal* terminal = nullptr;
