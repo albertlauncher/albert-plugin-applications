@@ -1,4 +1,4 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #include "application.h"
 #include <Cocoa/Cocoa.h>
@@ -111,7 +111,7 @@ Application::Application(const QString &path, bool use_non_localized_name)
         }
 
         if (names_.isEmpty() || use_non_localized_name)
-            if (auto name = path_.section("/", -1).chopped(4); !names_.contains(name))// remove .app
+            if (auto name = path_.section(u'/', -1).chopped(4); !names_.contains(name))// remove .app
                 names_ << name;
 
         // Remove soft hyphens
@@ -122,6 +122,6 @@ Application::Application(const QString &path, bool use_non_localized_name)
 
 QString Application::subtext() const { return path_; }
 
-QStringList Application::iconUrls() const { return {QString("qfip:%1").arg(path_)}; }
+QStringList Application::iconUrls() const { return {QStringLiteral("qfip:%1").arg(path_)}; }
 
-void Application::launch() const { runDetachedProcess({"open", path_}); }
+void Application::launch() const { runDetachedProcess({QStringLiteral("open"), path_}); }

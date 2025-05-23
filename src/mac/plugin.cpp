@@ -1,4 +1,4 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #include "application.h"
 #include "plugin.h"
@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QWidget>
 #include <albert/logging.h>
+using namespace Qt::StringLiterals;
 using namespace albert;
 using namespace std;
 
@@ -15,10 +16,10 @@ namespace {
 static QStringList appDirectories()
 {
     return {
-        "/Applications",
-        "/System/Applications",
-        "/System/Cryptexes/App/System/Applications",  // Safari Home
-        "/System/Library/CoreServices/Finder.app/Contents/Applications"
+        u"/Applications"_s,
+        u"/System/Applications"_s,
+        u"/System/Cryptexes/App/System/Applications"_s,  // Safari Home
+        u"/System/Library/CoreServices/Finder.app/Contents/Applications"_s
     };
 }
 }
@@ -34,6 +35,15 @@ static void scanRecurse(QStringList &result, const QString &path, const bool abo
             scanRecurse(result, fi.absoluteFilePath());
 }
 
+static auto binary_search(vector<shared_ptr<applications::Application>> &apps, const QString &id)
+{
+    auto lb = lower_bound(apps.begin(), apps.end(), id,
+                          [](const auto &app, const auto &id){ return app->id() < id; });
+    if (lb != apps.end() && (*lb)->id() == id)
+        return lb;
+    return apps.end();
+};
+
 Plugin::Plugin()
 {
     auto s = settings();
@@ -46,7 +56,7 @@ Plugin::Plugin()
     {
         vector<shared_ptr<applications::Application>> apps;
 
-        apps.emplace_back(make_shared<Application>("/System/Library/CoreServices/Finder.app",
+        apps.emplace_back(make_shared<Application>(u"/System/Library/CoreServices/Finder.app"_s,
                                                    use_non_localized_name_));
 
         QStringList app_paths;
@@ -70,39 +80,30 @@ Plugin::Plugin()
 
     indexer.finish = [this](auto &&result)
     {
-        INFO << QString("Indexed %1 applications (%2 ms).")
-                .arg(result.size()).arg(indexer.runtime.count());
+        INFO << u"Indexed %1 applications (%2 ms)."_s
+                    .arg(result.size()).arg(indexer.runtime.count());
         applications = ::move(result);
 
         // Add terminals (replace apps by polymorphic type)
 
         terminals.clear();
 
-        auto binary_search = [](auto &apps, const auto &id)
-        {
-            auto lb = lower_bound(apps.begin(), apps.end(), id,
-                                  [](const auto &app, const auto &id){ return app->id() < id; });
-            if (lb != apps.end() && (*lb)->id() == id)
-                return lb;
-            return apps.end();
-        };
-
-        if (auto it = binary_search(applications, "com.apple.Terminal"); it != applications.end())
+        if (auto it = binary_search(applications, u"com.apple.Terminal"_s); it != applications.end())
         {
             auto t = make_shared<Terminal>(
                 *static_cast<::Application*>(it->get()),
-                R"(tell application "Terminal" to activate
-                   tell application "Terminal" to do script "exec %1")"
+                uR"(tell application "Terminal" to activate
+                    tell application "Terminal" to do script "exec %1")"_s
             );
             *it = static_pointer_cast<applications::Application>(t);
             terminals.emplace_back(t.get());
         }
 
-        if (auto it = binary_search(applications, "com.googlecode.iterm2"); it != applications.end())
+        if (auto it = binary_search(applications, u"com.googlecode.iterm2"_s); it != applications.end())
         {
             auto t = make_shared<Terminal>(
                 *static_cast<::Application*>(it->get()),
-                R"(tell application "iTerm" to create window with default profile command "%1")"
+                uR"(tell application "iTerm" to create window with default profile command "%1")"_s
             );
             *it = static_pointer_cast<applications::Application>(t);
             terminals.emplace_back(t.get());

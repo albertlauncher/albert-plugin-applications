@@ -3,6 +3,7 @@
 #include "desktopentryparser.h"
 #include <QFile>
 #include <albert/logging.h>
+using namespace Qt::StringLiterals;
 using namespace std;
 
 DesktopEntryParser::DesktopEntryParser(const QString &path)
@@ -15,22 +16,23 @@ DesktopEntryParser::DesktopEntryParser(const QString &path)
         {
             line = line.trimmed();
 
-            if (line.startsWith('#') || line.isEmpty())
+            if (line.startsWith(u'#') || line.isEmpty())
                 continue;
 
-            if (line.startsWith("["))
+            if (line.startsWith(u"["))
             {
                 currentGroup = line.mid(1,line.size()-2).trimmed();
                 continue;
             }
 
-            data[currentGroup].emplace(line.section('=', 0,0).trimmed(),
-                                       line.section('=', 1, -1).trimmed());
+            data[currentGroup].emplace(line.section(u'=', 0,0).trimmed(),
+                                       line.section(u'=', 1, -1).trimmed());
         }
         file.close();
     }
     else
-        throw runtime_error(QString("Failed opening file '%1': %2").arg(path, file.errorString()).toStdString());
+        throw runtime_error(u"Failed opening file '%1': %2"_s
+                                .arg(path, file.errorString()).toStdString());
 }
 
 QString DesktopEntryParser::getRawValue(const QString &section, const QString &key) const
@@ -43,12 +45,12 @@ QString DesktopEntryParser::getRawValue(const QString &section, const QString &k
         try {
             return s.at(key);
         } catch (const out_of_range&) {
-            throw KeyDoesNotExist(QString("Section '%1' does not contain a key '%2'.")
-                                  .arg(section, key).toStdString());
+            throw KeyDoesNotExist(u"Section '%1' does not contain a key '%2'."_s
+                                      .arg(section, key).toStdString());
         }
     } catch (const out_of_range&) {
-        throw SectionDoesNotExist(QString("Desktop entry does not contain a section '%1'.")
-                                  .arg(section).toStdString());
+        throw SectionDoesNotExist(u"Desktop entry does not contain a section '%1'."_s
+                                      .arg(section).toStdString());
     }
 }
 
@@ -59,20 +61,20 @@ QString DesktopEntryParser::getEscapedValue(const QString &section, const QStrin
     auto unescaped = getRawValue(section, key);
     for (auto it = unescaped.cbegin(); it != unescaped.cend();)
     {
-        if (*it == '\\'){
+        if (*it == u'\\'){
             ++it;
             if (it == unescaped.cend())
                 break;
-            else if (*it=='s')
-                result.append(' ');
-            else if (*it=='n')
-                result.append('\n');
-            else if (*it=='t')
-                result.append('\t');
-            else if (*it=='r')
-                result.append('\r');
-            else if (*it=='\\')
-                result.append('\\');
+            else if (*it==u's')
+                result.append(u' ');
+            else if (*it==u'n')
+                result.append(u'\n');
+            else if (*it==u't')
+                result.append(u'\t');
+            else if (*it==u'r')
+                result.append(u'\r');
+            else if (*it==u'\\')
+                result.append(u'\\');
         }
         else
             result.append(*it);
@@ -96,17 +98,17 @@ QString DesktopEntryParser::getLocaleString(const QString &section, const QStrin
     //       (lang_COUNTRY@MODIFIER, lang_COUNTRY, lang@MODIFIER, lang, default value)
 
     try {
-        return getEscapedValue(section, QString("%1[%2]").arg(key, locale.name()));
+        return getEscapedValue(section, u"%1[%2]"_s.arg(key, locale.name()));
     } catch (const out_of_range&) { }
 
     try {
-        return getEscapedValue(section, QString("%1[%2]").arg(key, locale.name().left(2)));
+        return getEscapedValue(section, u"%1[%2]"_s.arg(key, locale.name().left(2)));
     } catch (const out_of_range&) { }
 
     QString unlocalized = getEscapedValue(section, key);
 
     try {
-        auto domain = getEscapedValue(section, QStringLiteral("X-Ubuntu-Gettext-Domain"));
+        auto domain = getEscapedValue(section, u"X-Ubuntu-Gettext-Domain"_s);
         // The resulting string is statically allocated and must not be modified or freed
         // Returns msgid on lookup failure
         // https://linux.die.net/man/3/dgettext
@@ -125,13 +127,13 @@ QString DesktopEntryParser::getIconString(const QString &section, const QString 
 bool DesktopEntryParser::getBoolean(const QString &section, const QString &key)
 {
     auto raw = getRawValue(section, key);  // throws
-    if (raw == QStringLiteral("true"))
+    if (raw == u"true"_s)
         return true;
-    else if (raw == QStringLiteral("false"))
+    else if (raw == u"false"_s)
         return false;
     else
-        throw runtime_error(QString("Value for key '%1' in section '%2' is neither true nor false.")
-                              .arg(key, section).toStdString());
+        throw runtime_error(u"Value for key '%1' in section '%2' is neither true nor false."_s
+                                .arg(key, section).toStdString());
 }
 
 double DesktopEntryParser::getNumeric(const QString &, const QString &)
@@ -156,30 +158,30 @@ optional<QStringList> DesktopEntryParser::splitExec(const QString &s) noexcept
             }
         }
 
-        else if (*c == '"')  // quote
+        else if (*c == u'"')  // quote
         {
             ++c;
 
             while (c != s.end())
             {
-                if (*c == '"')  // quote termination
+                if (*c == u'"')  // quote termination
                     break;
 
-                else if (*c == '\\')  // escape
+                else if (*c == u'\\')  // escape
                 {
                     ++c;
                     if(c == s.end())
                     {
-                        WARN << QString("Unterminated escape in %1").arg(s);
+                        WARN << u"Unterminated escape in %1"_s.arg(s);
                         return {};  // unterminated escape
                     }
 
-                    else if (QStringLiteral(R"("`$\)").contains(*c))
+                    else if (uR"("`$\)"_s.contains(*c))
                         token.append(*c);
 
                     else
                     {
-                        WARN << QString("Invalid escape '%1' at '%2': %3")
+                        WARN << u"Invalid escape '%1' at '%2': %3"_s
                                     .arg(*c).arg(distance(c, s.begin())).arg(s);
                         return {};  // invalid escape
                     }
@@ -193,7 +195,7 @@ optional<QStringList> DesktopEntryParser::splitExec(const QString &s) noexcept
 
             if (c == s.end())
             {
-                WARN << QString("Unterminated escape in %1").arg(s);
+                WARN << u"Unterminated escape in %1"_s.arg(s);
                 return {};  // unterminated quote
             }
         }

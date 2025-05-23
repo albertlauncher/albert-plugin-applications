@@ -14,6 +14,7 @@
 #include <albert/indexitem.h>
 #include <albert/logging.h>
 #include <albert/widgetsutil.h>
+using namespace Qt::StringLiterals;
 using namespace albert;
 using namespace std;
 using namespace util;
@@ -21,7 +22,7 @@ ALBERT_LOGGING_CATEGORY("apps")
 
 static const char* CFG_TERM = "terminal";
 
-QString PluginBase::defaultTrigger() const { return QStringLiteral("apps "); }
+QString PluginBase::defaultTrigger() const { return u"apps "_s; }
 
 void PluginBase::updateIndexItems()  { indexer.run(); }
 
@@ -51,7 +52,8 @@ void PluginBase::setUserTerminalFromConfig()
     else if (auto s = settings(); !s->contains(CFG_TERM))  // unconfigured
     {
         terminal = *terminals.begin();  // guaranteed to exist since not empty
-        WARN << QString("No terminal configured. Using %1.").arg(terminal->name());
+        WARN << u"No terminal configured. Using %1."_s
+                    .arg(terminal->name());
     }
     else  // user configured
     {
@@ -62,7 +64,7 @@ void PluginBase::setUserTerminalFromConfig()
         else
         {
             terminal = *terminals.begin();  // guaranteed to exist since not empty
-            WARN << QString("Configured terminal '%1'  does not exist. Using %2.")
+            WARN << u"Configured terminal '%1' does not exist. Using %2."_s
                         .arg(term_id, terminal->id());
         }
     }
@@ -109,12 +111,12 @@ QWidget *PluginBase::createTerminalFormWidget()
             DEBG << "Terminal set to" << term_id;
         }
         else
-            WARN << QString("Selected terminal '%1' vanished.").arg(term_id);
+            WARN << "Selected terminal vanished:" << term_id;
     });
 
-    QString t = "https://github.com/albertlauncher/albert/issues/new/choose";
+    QString t = u"https://github.com/albertlauncher/albert/issues/new/choose"_s;
     t = tr(R"(Report missing terminals <a href="%1">here</a>.)").arg(t);
-    t = QString(R"(<span style="font-size:9pt; color:#808080;">%1</span>)").arg(t);
+    t = uR"(<span style="font-size:9pt; color:#808080;">%1</span>)"_s.arg(t);
     lbl->setText(t);
     lbl->setOpenExternalLinks(true);
 
@@ -168,7 +170,7 @@ vector<IndexItem> PluginBase::buildIndexItems() const
             r.emplace_back(app, name);
 
             // https://en.wikipedia.org/wiki/Combining_Diacritical_Marks
-            static QRegularExpression re(R"([\x{0300}-\x{036f}])");
+            static QRegularExpression re(uR"([\x{0300}-\x{036f}])"_s);
             auto normalized = name.normalized(QString::NormalizationForm_D).remove(re);
 
             auto ccs = camelCaseSplit(normalized);
@@ -194,7 +196,7 @@ vector<IndexItem> PluginBase::buildIndexItems() const
 
 QStringList PluginBase::camelCaseSplit(const QString &s)
 {
-    static QRegularExpression re(R"([A-Z0-9]?[a-z]+|[A-Z0-9]+(?![a-z]))");
+    static QRegularExpression re(uR"([A-Z0-9]?[a-z]+|[A-Z0-9]+(?![a-z]))"_s);
     auto it = re.globalMatch(s);
 
     QStringList words;

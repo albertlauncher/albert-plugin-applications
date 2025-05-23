@@ -1,4 +1,4 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #pragma once
 #include "application.h"
@@ -12,7 +12,7 @@ class Terminal : public Application
 public:
 
     /// \note the apple script must contain the placeholder %1 for the command line to run
-    Terminal(const ::Application &app, const char* apple_script);
+    Terminal(const ::Application &app, const QString& apple_script);
 
     using ::Application::launch;
 
@@ -20,6 +20,6 @@ public:
 
 private:
 
-    const char *apple_script_;
+    const QString apple_script_;
 
 };

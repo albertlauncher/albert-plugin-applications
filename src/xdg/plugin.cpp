@@ -10,6 +10,7 @@
 #include <QStandardPaths>
 #include <QWidget>
 #include <albert/widgetsutil.h>
+using namespace Qt::StringLiterals;
 using namespace albert::util;
 using namespace albert;
 using namespace std;
@@ -22,23 +23,23 @@ static QString normalizedContainerCommand(const QStringList &Exec)
     // e.g. env TERM=xterm-256color byobu
 
     // Flatpak
-    if (QFileInfo(Exec.at(0)).fileName() == QStringLiteral("flatpak"))
+    if (QFileInfo(Exec.at(0)).fileName() == u"flatpak"_s)
     {
         for (const auto &arg : Exec)
-            if (arg.startsWith(QStringLiteral("--command=")))
+            if (arg.startsWith(u"--command="_s))
                 command = arg.mid(10);  // size of '--command='
 
         if (command.isEmpty())
-            WARN << "Flatpak exec commandline w/o '--command':" << Exec.join(" ");
+            WARN << "Flatpak exec commandline w/o '--command':" << Exec.join(QChar::Space);
     }
 
     // Snapcraft
     else if (auto it = find_if(Exec.begin(), Exec.end(),
-                               [](const auto &arg){ return arg.startsWith("/snap/bin/"); });
+                               [](const auto &arg){ return arg.startsWith(u"/snap/bin/"_s); });
              it != Exec.end())
     {
         if (command = it->mid(10); command.isEmpty())  // size of '/snap/bin/'
-            WARN << "Failed getting snap command: Exec:" << Exec.join(" ");
+            WARN << "Failed getting snap command: Exec:" << Exec.join(QChar::Space);
     }
 
     // Native command
@@ -50,63 +51,63 @@ static QString normalizedContainerCommand(const QStringList &Exec)
 
 const map<QString, QStringList> Plugin::exec_args  // command > ExecArg
 {
-    {"alacritty", {"-e"}},
+    {u"alacritty"_s, {u"-e"_s}},
     // {"asbru-cm", {}},
-    {"blackbox", {"--"}},
-    {"blackbox-terminal", {"--"}},
+    {u"blackbox"_s, {u"--"_s}},
+    {u"blackbox-terminal"_s, {u"--"_s}},
     // {"byobu", {}},
     // {"com.github.amezin.ddterm", {}},
-    {"contour", {"--"}},
-    {"cool-retro-term", {"-e"}},
+    {u"contour"_s, {u"--"_s}},
+    {u"cool-retro-term"_s, {u"-e"_s}},
     // {"cosmic-term", {}},
-    {"deepin-terminal", {"-e"}},
-    // {"deepin-terminal-gtk", {"-e"}},  // archived
+    {u"deepin-terminal"_s, {u"-e"_s}},
+    // {"deepin-terminal-gtk", {u"-e"_s}},  // archived
     // {"domterm", {}},
     // {"electerm", {}},
     // {"fish", {}},
-    {"foot", {}},  // yes empty
-    {"footclient", {}},  // yes empty
+    {u"foot"_s, {}},  // yes empty
+    {u"footclient"_s, {}},  // yes empty
     // {"gmrun", {}},
-    {"gnome-terminal", {"--"}},
-    {"ghostty", {"-e"}},
+    {u"gnome-terminal"_s, {u"--"_s}},
+    {u"ghostty"_s, {u"-e"_s}},
     // {"guake", {}},
     // {"hyper", {}},
-    {"io.elementary.terminal", {"-x"}},
-    {"kgx", {"-e"}},
-    {"kitty", {"--"}},
-    {"konsole", {"-e"}},
-    {"lxterminal", {"-e"}},
-    {"mate-terminal", {"-x"}},
+    {u"io.elementary.terminal"_s, {u"-x"_s}},
+    {u"kgx"_s, {u"-e"_s}},
+    {u"kitty"_s, {u"--"_s}},
+    {u"konsole"_s, {u"-e"_s}},
+    {u"lxterminal"_s, {u"-e"_s}},
+    {u"mate-terminal"_s, {u"-x"_s}},
     // {"mlterm", {}},
     // {"pangoterm", {}},
     // {"pods", {}},
-    {"ptyxis", {"--"}},
+    {u"ptyxis"_s, {u"--"_s}},
     // {"qtdomterm", {}},
-    {"qterminal", {"-e"}},
-    {"roxterm", {"-x"}},
+    {u"qterminal"_s, {u"-e"_s}},
+    {u"roxterm"_s, {u"-x"_s}},
     // {"sakura", {}},
-    {"st", {"-e"}},
+    {u"st"_s, {u"-e"_s}},
     // {"tabby.AppImage", {}},
-    {"terminator", {"-u", "-x"}},  // https://github.com/gnome-terminator/terminator/issues/939
-    {"terminology", {"-e"}},
+    {u"terminator"_s, {u"-u"_s, u"-x"_s}},  // https://github.com/gnome-terminator/terminator/issues/939
+    {u"terminology"_s, {u"-e"_s}},
     // {"terminus", {}},
     // {"termit", {}},
-    {"termite", {"-e"}},
+    {u"termite"_s, {u"-e"_s}},
     // {"termius", {}},
     // {"tilda", {}},
-    {"tilix", {"-e"}},
+    {u"tilix"_s, {u"-e"_s}},
     // {"txiterm", {}},
-    {"urxvt", {"-e"}},
-    {"urxvt-tabbed", {"-e"}},
-    {"urxvtc", {"-e"}},
-    {"uxterm", {"-e"}},
+    {u"urxvt"_s, {u"-e"_s}},
+    {u"urxvt-tabbed"_s, {u"-e"_s}},
+    {u"urxvtc"_s, {u"-e"_s}},
+    {u"uxterm"_s, {u"-e"_s}},
     // {"warp-terminal", {}},
     // {"waveterm", {}},
-    {"wezterm", {"-e"}},
-    {"x-terminal-emulator", {"-e"}},
+    {u"wezterm"_s, {u"-e"_s}},
+    {u"x-terminal-emulator"_s, {u"-e"_s}},
     // {"x3270a", {}},
-    {"xfce4-terminal", {"-x"}},
-    {"xterm", {"-e"}},
+    {u"xfce4-terminal"_s, {u"-x"_s}},
+    {u"xterm"_s, {u"-e"_s}},
     // {"yakuake", {}},
     // {"zutty", {}},
 };
@@ -171,8 +172,8 @@ Plugin::Plugin()
         {
             DEBG << "Scanning desktop entries in:" << dir;
 
-            QDirIterator it(dir, QStringList("*.desktop"), QDir::Files,
-                            QDirIterator::Subdirectories|QDirIterator::FollowSymlinks);
+            QDirIterator it(dir, {u"*.desktop"_s}, QDir::Files,
+                            QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
 
             while (it.hasNext())
             {
@@ -181,11 +182,11 @@ Plugin::Plugin()
                 // To determine the ID of a desktop file, make its full path relative to
                 // the $XDG_DATA_DIRS component in which the desktop file is installed,
                 // remove the "applications/" prefix, and turn '/' into '-'. Chop off '.desktop'.
-                static QRegularExpression re("^.*applications/");
-                QString id = QString(path).remove(re).replace("/","-").chopped(8);
+                static QRegularExpression re(u"^.*applications/"_s);
+                QString id = QString(path).remove(re).replace(u'/', u'-').chopped(8);
 
                 if (const auto &[dit, success] = desktop_files.emplace(id, path); !success)
-                    DEBG << QString("Desktop file '%1' at '%2' will be skipped: Shadowed by '%3'")
+                    DEBG << u"Desktop file '%1' at '%2' will be skipped: Shadowed by '%3'"_s
                                 .arg(id, path, desktop_files[id]);
             }
         }
@@ -208,11 +209,11 @@ Plugin::Plugin()
             try
             {
                 apps.emplace_back(make_shared<Application>(id, path, po));
-                DEBG << QString("Valid desktop file '%1': '%2'").arg(id, path);
+                DEBG << u"Valid desktop file '%1': '%2'"_s.arg(id, path);
             }
             catch (const exception &e)
             {
-                DEBG << QString("Skipped desktop entry '%1': %2").arg(path, e.what());
+                DEBG << u"Skipped desktop entry '%1':"_s.arg(path) << e.what();
             }
         }
 
@@ -223,7 +224,7 @@ Plugin::Plugin()
     {
         applications = ::move(result);
 
-        INFO << QStringLiteral("Indexed %1 applications [%2 ms]")
+        INFO << u"Indexed %1 applications [%2 ms]"_s
                     .arg(applications.size()).arg(indexer.runtime.count());
 
         // Replace terminal apps with terminals and populate terminals
@@ -244,11 +245,11 @@ Plugin::Plugin()
                         terminals.emplace_back(term.get());
                     }
                     else
-                        WARN << QString("Terminal '%1' not supported. Please post an issue. Exec: %2")
-                                    .arg(app->id(), app->exec().join(" "));
+                        WARN << u"Terminal '%1' not supported. Please post an issue. Exec: %2"_s
+                                    .arg(app->id(), app->exec().join(QChar::Space));
                 else
-                    WARN << QString("Failed to get normalized command. Terminal '%1' not supported. Please post an issue. Exec: %2")
-                                .arg(app->id(), app->exec().join(" "));
+                    WARN << u"Failed to get normalized command. Terminal '%1' not supported. Please post an issue. Exec: %2"_s
+                                .arg(app->id(), app->exec().join(QChar::Space));
             }
 
         setUserTerminalFromConfig();
@@ -302,9 +303,9 @@ QJsonObject Plugin::telemetryData() const
     QJsonObject t;
     for (const auto &iapp : applications)
         if (const auto &app = static_pointer_cast<::Application>(iapp); app->isTerminal())
-            t.insert(app->id(), app->exec().join(" "));
+            t.insert(app->id(), app->exec().join(QChar::Space));
 
     QJsonObject o;
-    o.insert("terminals", t);
+    o.insert(u"terminals"_s, t);
     return o;
 }

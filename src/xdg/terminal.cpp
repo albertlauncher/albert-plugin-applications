@@ -29,7 +29,10 @@ void Terminal::launch(const QString &script) const
     }
 
     else
-        launch(QStringList() << pwd->pw_shell << "-i" << "-c" << script);
+        launch(QStringList() << QString::fromLocal8Bit(pwd->pw_shell)
+                             << QStringLiteral("-i")
+                             << QStringLiteral("-c")
+                             << script);
 }
 
 void Terminal::launch(QStringList commandline, const QString &working_dir) const
