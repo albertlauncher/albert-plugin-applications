@@ -4,9 +4,10 @@
 #include "desktopentryparser.h"
 #include "plugin.h"
 #include <QFileInfo>
+#include <albert/systemutil.h>
 #include <ranges>
-#include <albert/albert.h>
 using namespace Qt::StringLiterals;
+using namespace albert::util;
 using namespace albert;
 using namespace std;
 

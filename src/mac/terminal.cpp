@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <albert/albert.h>
 #include <albert/logging.h>
+#include <albert/systemutil.h>
 #include <pwd.h>
 #include <unistd.h>
 using namespace albert;
@@ -52,10 +53,10 @@ void Terminal::launch(QString script) const
 
         auto command = QStringLiteral("%1 -i %2").arg(pwd->pw_shell, file.fileName());
 
-        runDetachedProcess({QStringLiteral("/usr/bin/osascript"),
-                            QStringLiteral("-l"),
-                            QStringLiteral("AppleScript"),
-                            QStringLiteral("-e"),
-                            apple_script_.arg(command)});
+        util::runDetachedProcess({QStringLiteral("/usr/bin/osascript"),
+                                  QStringLiteral("-l"),
+                                  QStringLiteral("AppleScript"),
+                                  QStringLiteral("-e"),
+                                  apple_script_.arg(command)});
     }
 }

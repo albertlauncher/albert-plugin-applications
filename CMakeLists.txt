@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(applications VERSION 14.5)
+project(applications VERSION 14.6)
 
 find_package(Albert REQUIRED)
 
