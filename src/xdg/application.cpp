@@ -220,6 +220,12 @@ void Application::launchExec(const QStringList &exec, QUrl url, const QString &w
 {
     auto commandline = fieldCodesExpanded(exec, url);
     auto wd = working_dir.isEmpty() ? working_dir_ : working_dir;
+
+    if (auto prefix = qEnvironmentVariable("ALBERT_APPLICATIONS_COMMAND_PREFIX")
+                          .split(u';', Qt::SkipEmptyParts);
+        !prefix.isEmpty())
+        commandline = prefix + commandline;
+
     if (term_)
         plugin->runTerminal(commandline, wd);
     else
