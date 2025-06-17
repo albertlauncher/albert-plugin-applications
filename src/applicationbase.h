@@ -1,10 +1,9 @@
-// Copyright (c) 2022-2024 Manuel Schneider
+// Copyright (c) 2022-2025 Manuel Schneider
 
 #pragma once
 #include "applications.h"
 #include <QCoreApplication>
 #include <QStringList>
-#include <albert/action.h>
 #include <albert/item.h>
 #include <vector>
 

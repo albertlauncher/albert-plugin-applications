@@ -5,7 +5,6 @@
 #include "terminal.h"
 #include "ui_configwidget.h"
 #include <QDir>
-#include <QMessageBox>
 #include <QWidget>
 #include <albert/logging.h>
 using namespace Qt::StringLiterals;

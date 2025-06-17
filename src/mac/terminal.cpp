@@ -3,12 +3,13 @@
 #include "terminal.h"
 #include <QDir>
 #include <QFile>
-#include <QMessageBox>
 #include <albert/albert.h>
 #include <albert/logging.h>
+#include <albert/messagebox.h>
 #include <albert/systemutil.h>
 #include <pwd.h>
 #include <unistd.h>
+using namespace albert::util;
 using namespace albert;
 
 Terminal::Terminal(const ::Application &app, const QString &apple_script):
@@ -22,14 +23,14 @@ void Terminal::launch(QString script) const
     {
         const char *msg = QT_TR_NOOP("Failed to run terminal with script: getpwuid(…) failed.");
         WARN << msg;
-        QMessageBox::warning(nullptr, {}, tr(msg));
+        warning(tr(msg));
     }
 
     else if (auto s = script.simplified(); s.isEmpty())
     {
         const char* msg = QT_TR_NOOP("Failed to run terminal with script: Script is empty.");
         WARN << msg;
-        QMessageBox::warning(nullptr, {}, tr(msg));
+        warning(tr(msg));
     }
 
     else if (QFile file(cacheLocation() / "terminal_command");
@@ -38,7 +39,7 @@ void Terminal::launch(QString script) const
         const char *msg = QT_TR_NOOP("Failed to run terminal with script: Could "
                                      "not create temporary script file.");
         WARN << msg << file.errorString();
-        QMessageBox::warning(nullptr, {}, tr(msg) % QChar::Space % file.errorString());
+        warning(tr(msg) % QChar::Space % file.errorString());
     }
 
     else

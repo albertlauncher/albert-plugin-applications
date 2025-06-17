@@ -6,7 +6,7 @@
 #include <albert/telemetryprovider.h>
 
 class Plugin : public PluginBase,
-               public albert::TelemetryProvider
+               public albert::detail::TelemetryProvider
 {
     ALBERT_PLUGIN
 

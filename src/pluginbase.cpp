@@ -6,18 +6,19 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QSignalBlocker>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <albert/iconprovider.h>
 #include <albert/indexitem.h>
 #include <albert/logging.h>
+#include <albert/messagebox.h>
 #include <albert/widgetsutil.h>
 using namespace Qt::StringLiterals;
+using namespace albert::detail;
+using namespace albert::util;
 using namespace albert;
 using namespace std;
-using namespace util;
 ALBERT_LOGGING_CATEGORY("apps")
 
 static const char* CFG_TERM = "terminal";
@@ -211,6 +212,6 @@ void PluginBase::runTerminal(const QString &script) const
     if (terminal)
         terminal->launch(script);
     else
-        QMessageBox::warning(nullptr, {}, tr("No terminal available."));
+        warning(tr("No terminal available."));
 }
 
