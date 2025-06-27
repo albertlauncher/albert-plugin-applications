@@ -8,7 +8,7 @@
 ## API
 
 - Exposes `void runTerminal(const QString &script) const` allowing other plugins to run a 
-  shell script a terminal.
+  shell script in a terminal.
 
 ## Platforms
 
