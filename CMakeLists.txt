@@ -41,8 +41,6 @@ elseif(UNIX)
         src/xdg/application.cpp
         src/xdg/application.h
         src/xdg/configwidget.ui
-        src/xdg/desktopentryparser.cpp
-        src/xdg/desktopentryparser.h
         src/xdg/plugin.cpp
         src/xdg/plugin.h
         src/xdg/terminal.cpp

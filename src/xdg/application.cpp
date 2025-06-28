@@ -1,12 +1,13 @@
 // Copyright (c) 2022-2025 Manuel Schneider
 
 #include "application.h"
-#include "desktopentryparser.h"
 #include "plugin.h"
 #include <QFileInfo>
+#include <albert/desktopentryparser.h>
 #include <albert/systemutil.h>
 #include <ranges>
 using namespace Qt::StringLiterals;
+using namespace albert::detail;
 using namespace albert::util;
 using namespace albert;
 using namespace std;
