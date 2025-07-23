@@ -19,6 +19,8 @@ Terminal::Terminal(const ::Application &app, const QString &apple_script):
 
 void Terminal::launch(QString script) const
 {
+    DEBG << "Launching terminal with script:" << script;
+
     if (passwd *pwd = getpwuid(geteuid()); pwd == nullptr)
     {
         const char *msg = QT_TR_NOOP("Failed to run terminal with script: getpwuid(…) failed.");
@@ -36,8 +38,8 @@ void Terminal::launch(QString script) const
     else if (QFile file(cacheLocation() / "terminal_command");
              !file.open(QIODevice::WriteOnly))
     {
-        const char *msg = QT_TR_NOOP("Failed to run terminal with script: Could "
-                                     "not create temporary script file.");
+        const char *msg = QT_TR_NOOP("Failed to run terminal with script: "
+                                     "Could not create temporary script file.");
         WARN << msg << file.errorString();
         warning(tr(msg) % QChar::Space % file.errorString());
     }
