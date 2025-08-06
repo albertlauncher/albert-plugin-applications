@@ -3,6 +3,7 @@
     "description": "Launch applications",
     "description[de]": "Starte Anwendungen",
     "license": "MIT",
+    "maintainers": ["@manuelschneid3r"],
     "name": "Applications",
     "name[de]": "Anwendungen",
     "url": "https://github.com/albertlauncher/albert-plugin-applications",
