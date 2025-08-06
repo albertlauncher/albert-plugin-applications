@@ -56,7 +56,11 @@ void Terminal::launch(QString script) const
 
         auto command = QStringLiteral("%1 -i %2").arg(pwd->pw_shell, file.fileName());
 
-        util::runAppleScript(apple_script_.arg(command));
+        try {
+            util::runAppleScript(apple_script_.arg(command));
+        } catch (const std::runtime_error &e) {
+            WARN << e.what();
+        }
 
     }
 }
