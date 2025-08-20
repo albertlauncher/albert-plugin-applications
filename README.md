@@ -1,4 +1,4 @@
-# albert-plugin-applications
+# Albert plugin: Applications
 
 ## Features
 
