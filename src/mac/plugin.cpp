@@ -15,6 +15,7 @@ namespace {
 static QStringList appDirectories()
 {
     return {
+        QDir::home().filePath(u"Applications"_s),
         u"/Applications"_s,
         u"/System/Applications"_s,
         u"/System/Cryptexes/App/System/Applications"_s,  // Safari Home
