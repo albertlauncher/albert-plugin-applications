@@ -4,6 +4,7 @@
 #include "plugin.h"
 #include <QFileInfo>
 #include <albert/desktopentryparser.h>
+#include <albert/iconutil.h>
 #include <albert/systemutil.h>
 #include <ranges>
 using namespace Qt::StringLiterals;
@@ -188,12 +189,12 @@ Application::Application(const QString &id, const QString &path, ParseOptions po
 
 QString Application::subtext() const { return description_; }
 
-QStringList Application::iconUrls() const
+unique_ptr<Icon> Application::icon() const
 {
     if (QFileInfo(icon_).isAbsolute())
-        return { icon_ };
+        return makeImageIcon(icon_);
     else
-        return { u"xdg:%1"_s.arg(icon_) };
+        return makeThemeIcon(icon_);
 }
 
 vector<Action> Application::actions() const

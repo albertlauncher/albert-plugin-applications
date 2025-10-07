@@ -15,7 +15,7 @@ public:
     Application(const Application &) = default;
 
     QString subtext() const override;
-    QStringList iconUrls() const override;
+    std::unique_ptr<albert::Icon> icon() const override;
     void launch() const override;
 
 };

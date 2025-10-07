@@ -4,7 +4,6 @@
 #include "applicationbase.h"
 #include <QString>
 #include <QUrl>
-#include <albert/item.h>
 
 class Application : public ApplicationBase
 {
@@ -22,10 +21,10 @@ public:
     Application(const QString &id, const QString &path, ParseOptions po);
     Application(const Application &) = default;
 
-    QString subtext() const override final;
-    QStringList iconUrls() const override final;
-    void launch() const override final;
-    std::vector<albert::Action> actions() const override final;
+    QString subtext() const override;
+    std::unique_ptr<albert::Icon> icon() const override;
+    void launch() const override;
+    std::vector<albert::Action> actions() const override;
 
     const QStringList &exec() const;
 

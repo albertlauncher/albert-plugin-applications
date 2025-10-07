@@ -9,7 +9,7 @@
 #include <QSignalBlocker>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <albert/iconprovider.h>
+#include <albert/iconutil.h>
 #include <albert/indexitem.h>
 #include <albert/logging.h>
 #include <albert/messagebox.h>
@@ -90,7 +90,7 @@ QWidget *PluginBase::createTerminalFormWidget()
         for (uint i = 0; i < sorted_terminals.size(); ++i)
         {
             const auto t = sorted_terminals.at(i);
-            cb->addItem(iconFromUrls(t->iconUrls()), t->name(), t->id());
+            cb->addItem(qIcon(t->icon()), t->name(), t->id());
             cb->setItemData(i, t->id(), Qt::ToolTipRole);
             if (t->id() == terminal->id())  // is current
                 cb->setCurrentIndex(i);
