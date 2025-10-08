@@ -59,7 +59,7 @@ const map<QString, QStringList> PluginBase::exec_args  // command > ExecArg
     // {"qtdomterm", {}},
     {u"qterminal"_s, {u"-e"_s}},
     {u"roxterm"_s, {u"-x"_s}},
-    // {"sakura", {}},
+    {u"sakura"_s, {u"-e"_s}},
     {u"st"_s, {u"-e"_s}},
     // {"tabby.AppImage", {}},
     {u"terminator"_s, {u"-u"_s, u"-x"_s}},  // https://github.com/gnome-terminator/terminator/issues/939
