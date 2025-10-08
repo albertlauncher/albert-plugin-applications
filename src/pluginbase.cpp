@@ -23,6 +23,69 @@ ALBERT_LOGGING_CATEGORY("apps")
 
 static const char* CFG_TERM = "terminal";
 
+const map<QString, QStringList> PluginBase::exec_args  // command > ExecArg
+{
+    {u"alacritty"_s, {u"-e"_s}},
+    // {"asbru-cm", {}},
+    {u"blackbox"_s, {u"--"_s}},
+    {u"blackbox-terminal"_s, {u"--"_s}},
+    // {"byobu", {}},
+    // {"com.github.amezin.ddterm", {}},
+    {u"contour"_s, {u"--"_s}},
+    {u"cool-retro-term"_s, {u"-e"_s}},
+    // {"cosmic-term", {}},
+    {u"deepin-terminal"_s, {u"-e"_s}},
+    // {"deepin-terminal-gtk", {u"-e"_s}},  // archived
+    // {"domterm", {}},
+    // {"electerm", {}},
+    // {"fish", {}},
+    {u"foot"_s, {}},  // yes empty
+    {u"footclient"_s, {}},  // yes empty
+    // {"gmrun", {}},
+    {u"gnome-terminal"_s, {u"--"_s}},
+    {u"ghostty"_s, {u"-e"_s}},
+    // {"guake", {}},
+    // {"hyper", {}},
+    {u"io.elementary.terminal"_s, {u"-x"_s}},
+    {u"kgx"_s, {u"-e"_s}},
+    {u"kitty"_s, {u"--"_s}},
+    {u"konsole"_s, {u"-e"_s}},
+    {u"lxterminal"_s, {u"-e"_s}},
+    {u"mate-terminal"_s, {u"-x"_s}},
+    // {"mlterm", {}},
+    // {"pangoterm", {}},
+    // {"pods", {}},
+    {u"ptyxis"_s, {u"--"_s}},
+    // {"qtdomterm", {}},
+    {u"qterminal"_s, {u"-e"_s}},
+    {u"roxterm"_s, {u"-x"_s}},
+    // {"sakura", {}},
+    {u"st"_s, {u"-e"_s}},
+    // {"tabby.AppImage", {}},
+    {u"terminator"_s, {u"-u"_s, u"-x"_s}},  // https://github.com/gnome-terminator/terminator/issues/939
+    {u"terminology"_s, {u"-e"_s}},
+    // {"terminus", {}},
+    // {"termit", {}},
+    {u"termite"_s, {u"-e"_s}},
+    // {"termius", {}},
+    // {"tilda", {}},
+    {u"tilix"_s, {u"-e"_s}},
+    // {"txiterm", {}},
+    {u"urxvt"_s, {u"-e"_s}},
+    {u"urxvt-tabbed"_s, {u"-e"_s}},
+    {u"urxvtc"_s, {u"-e"_s}},
+    {u"uxterm"_s, {u"-e"_s}},
+    // {"warp-terminal", {}},
+    // {"waveterm", {}},
+    {u"wezterm"_s, {u"-e"_s}},
+    {u"x-terminal-emulator"_s, {u"-e"_s}},
+    // {"x3270a", {}},
+    {u"xfce4-terminal"_s, {u"-x"_s}},
+    {u"xterm"_s, {u"-e"_s}},
+    // {"yakuake", {}},
+    // {"zutty", {}},
+};
+
 QString PluginBase::defaultTrigger() const { return u"apps "_s; }
 
 void PluginBase::updateIndexItems()  { indexer.run(); }

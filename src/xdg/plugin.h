@@ -25,8 +25,6 @@ public:
 
     void runTerminal(QStringList commandline, const QString working_dir = {}) const;
 
-    static const std::map<QString, QStringList> exec_args;
-
 private:
 
     ALBERT_PLUGIN_PROPERTY(bool, ignore_show_in_keys, true)

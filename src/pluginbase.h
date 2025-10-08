@@ -30,6 +30,8 @@ public:
     // applications::Plugin
     void runTerminal(const QString &script) const override;
 
+    static const std::map<QString, QStringList> exec_args;
+
 protected:
 
     void setUserTerminalFromConfig();
