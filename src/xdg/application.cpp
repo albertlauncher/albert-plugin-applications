@@ -5,11 +5,11 @@
 #include <QFileInfo>
 #include <albert/desktopentryparser.h>
 #include <albert/iconutil.h>
+#include <albert/logging.h>
 #include <albert/systemutil.h>
 #include <ranges>
 using namespace Qt::StringLiterals;
 using namespace albert::detail;
-using namespace albert::util;
 using namespace albert;
 using namespace std;
 

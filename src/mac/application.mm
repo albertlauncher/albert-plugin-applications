@@ -6,7 +6,6 @@
 #include <albert/iconutil.h>
 #include <albert/logging.h>
 #include <albert/systemutil.h>
-using namespace albert::util;
 using namespace albert;
 using namespace std;
 #if  ! __has_feature(objc_arc)

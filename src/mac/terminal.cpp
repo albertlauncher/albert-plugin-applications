@@ -3,13 +3,12 @@
 #include "terminal.h"
 #include <QDir>
 #include <QFile>
-#include <albert/albert.h>
+#include <albert/app.h>
 #include <albert/logging.h>
 #include <albert/messagebox.h>
 #include <albert/systemutil.h>
 #include <pwd.h>
 #include <unistd.h>
-using namespace albert::util;
 using namespace albert;
 
 Terminal::Terminal(const ::Application &app, const QString &apple_script):
@@ -35,7 +34,7 @@ void Terminal::launch(QString script) const
         warning(tr(msg));
     }
 
-    else if (QFile file(cacheLocation() / "terminal_command");
+    else if (QFile file(App::cacheLocation() / "terminal_command");
              !file.open(QIODevice::WriteOnly))
     {
         const char *msg = QT_TR_NOOP("Failed to run terminal with script: "
@@ -57,7 +56,7 @@ void Terminal::launch(QString script) const
         auto command = QStringLiteral("%1 -i %2").arg(pwd->pw_shell, file.fileName());
 
         try {
-            util::runAppleScript(apple_script_.arg(command));
+            runAppleScript(apple_script_.arg(command));
         } catch (const std::runtime_error &e) {
             WARN << e.what();
         }

@@ -7,13 +7,19 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QSettings>
 #include <QStandardPaths>
 #include <QWidget>
+#include <albert/logging.h>
 #include <albert/widgetsutil.h>
 using namespace Qt::StringLiterals;
-using namespace albert::util;
 using namespace albert;
 using namespace std;
+
+static const auto ck_ignore_show_in_keys = "ignore_show_in_keys";
+static const auto ck_use_exec            = "use_exec";
+static const auto ck_use_generic_name    = "use_generic_name";
+static const auto ck_use_keywords        = "use_keywords";
 
 static QString normalizedContainerCommand(const QStringList &Exec)
 {
@@ -62,31 +68,14 @@ Plugin::Plugin()
     fs_watcher.addPaths(appDirectories());
     connect(&fs_watcher, &QFileSystemWatcher::directoryChanged, this, &Plugin::updateIndexItems);
 
-
     // Load settings
 
-    auto s = settings();
-
-    restore_ignore_show_in_keys(s);
-    connect(this, &Plugin::ignore_show_in_keys_changed,
-            this, &Plugin::updateIndexItems);
-
-    restore_use_exec(s);
-    connect(this, &Plugin::use_exec_changed,
-            this, &Plugin::updateIndexItems);
-
-    restore_use_generic_name(s);
-    connect(this, &Plugin::use_generic_name_changed,
-            this, &Plugin::updateIndexItems);
-
-    restore_use_keywords(s);
-    connect(this, &Plugin::use_keywords_changed,
-            this, &Plugin::updateIndexItems);
-
-    restore_use_non_localized_name(s);
-    connect(this, &PluginBase::use_non_localized_name_changed,
-            this, &Plugin::updateIndexItems);
-
+    const auto s = settings();
+    // commonInitialize(*s); !??!?!
+    ignore_show_in_keys_ = s->value(ck_ignore_show_in_keys, true).value<bool>();
+    use_exec_            = s->value(ck_use_exec, false).value<bool>();
+    use_generic_name_    = s->value(ck_use_generic_name, false).value<bool>();
+    use_keywords_        = s->value(ck_use_keywords, false).value<bool>();
 
     // File watches
 
@@ -129,11 +118,11 @@ Plugin::Plugin()
         }
 
         Application::ParseOptions po{
-            .ignore_show_in_keys = ignore_show_in_keys(),
-            .use_exec = use_exec(),
-            .use_generic_name = use_generic_name(),
-            .use_keywords = use_keywords(),
-            .use_non_localized_name = use_non_localized_name()
+            .ignore_show_in_keys = ignoreShowInKeys(),
+            .use_exec = useExec(),
+            .use_generic_name = useGenericName(),
+            .use_keywords = useKeywords(),
+            .use_non_localized_name = useNonLocalizedName()
         };
 
         // Index the unique desktop files
@@ -157,12 +146,11 @@ Plugin::Plugin()
         return apps;
     };
 
-    indexer.finish = [this](vector<shared_ptr<applications::Application>> &&result)
+    indexer.finish = [this]
     {
-        applications = ::move(result);
+        applications = indexer.takeResult();
 
-        INFO << u"Indexed %1 applications [%2 ms]"_s
-                    .arg(applications.size()).arg(indexer.runtime.count());
+        INFO << u"Indexed %1 applications."_s.arg(applications.size());
 
         // Replace terminal apps with terminals and populate terminals
         // Filter supported terms by availability using destkop id
@@ -207,23 +195,23 @@ QWidget *Plugin::buildConfigWidget()
 
     bind(ui.checkBox_ignoreShowInKeys,
          this,
-         &Plugin::ignore_show_in_keys,
-         &Plugin::set_ignore_show_in_keys);
+         &Plugin::ignoreShowInKeys,
+         &Plugin::setIgnoreShowInKeys);
 
     bind(ui.checkBox_useExec,
          this,
-         &Plugin::use_exec,
-         &Plugin::set_use_exec);
+         &Plugin::useExec,
+         &Plugin::setUseExec);
 
     bind(ui.checkBox_useGenericName,
          this,
-         &Plugin::use_generic_name,
-         &Plugin::set_use_generic_name);
+         &Plugin::useGenericName,
+         &Plugin::setUseGenericName);
 
     bind(ui.checkBox_useKeywords,
          this,
-         &Plugin::use_keywords,
-         &Plugin::set_use_keywords);
+         &Plugin::useKeywords,
+         &Plugin::setUseKeywords);
 
     addBaseConfig(ui.formLayout);
 
@@ -245,4 +233,53 @@ QJsonObject Plugin::telemetryData() const
     QJsonObject o;
     o.insert(u"terminals"_s, t);
     return o;
+}
+
+
+bool Plugin::ignoreShowInKeys() const { return ignore_show_in_keys_; }
+
+void Plugin::setIgnoreShowInKeys(bool v)
+{
+    if (use_acronyms_ != v)
+    {
+        settings()->setValue(ck_ignore_show_in_keys, ignore_show_in_keys_);
+        ignore_show_in_keys_ = v;
+        updateIndexItems();
+    }
+}
+
+bool Plugin::useExec() const { return use_exec_; }
+
+void Plugin::setUseExec(bool v)
+{
+    if (use_acronyms_ != v)
+    {
+        settings()->setValue(ck_use_exec, use_exec_);
+        use_exec_ = v;
+        updateIndexItems();
+    }
+}
+
+bool Plugin::useGenericName() const { return use_generic_name_; }
+
+void Plugin::setUseGenericName(bool v)
+{
+    if (use_acronyms_ != v)
+    {
+        settings()->setValue(ck_use_generic_name, use_generic_name_);
+        use_generic_name_ = v;
+        updateIndexItems();
+    }
+}
+
+bool Plugin::useKeywords() const { return use_keywords_; }
+
+void Plugin::setUseKeywords(bool v)
+{
+    if (use_acronyms_ != v)
+    {
+        settings()->setValue(ck_use_keywords, use_keywords_);
+        use_keywords_ = v;
+        updateIndexItems();
+    }
 }

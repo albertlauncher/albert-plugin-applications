@@ -5,6 +5,7 @@
 #include "terminal.h"
 #include "ui_configwidget.h"
 #include <QDir>
+#include <QSettings>
 #include <QWidget>
 #include <albert/logging.h>
 using namespace Qt::StringLiterals;
@@ -46,8 +47,7 @@ static auto binary_search(vector<shared_ptr<applications::Application>> &apps, c
 
 Plugin::Plugin()
 {
-    auto s = settings();
-    commonInitialize(s);
+    commonInitialize(*settings());
 
     fs_watcher.addPaths(appDirectories());
     connect(&fs_watcher, &QFileSystemWatcher::directoryChanged, this, &Plugin::updateIndexItems);
@@ -78,11 +78,11 @@ Plugin::Plugin()
         return apps;
     };
 
-    indexer.finish = [this](auto &&result)
+    indexer.finish = [this]
     {
-        INFO << u"Indexed %1 applications (%2 ms)."_s
-                    .arg(result.size()).arg(indexer.runtime.count());
-        applications = ::move(result);
+        applications = indexer.takeResult();
+
+        INFO << u"Indexed %1 applications."_s.arg(applications.size());
 
         // Add terminals (replace apps by polymorphic type)
 

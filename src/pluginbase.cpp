@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QLabel>
+#include <QSettings>
 #include <QSignalBlocker>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -15,13 +16,14 @@
 #include <albert/messagebox.h>
 #include <albert/widgetsutil.h>
 using namespace Qt::StringLiterals;
-using namespace albert::detail;
-using namespace albert::util;
 using namespace albert;
 using namespace std;
 ALBERT_LOGGING_CATEGORY("apps")
 
-static const char* CFG_TERM = "terminal";
+static const auto ck_terminal = "terminal";
+static const auto ck_use_non_localized_name = "use_non_localized_name";
+static const auto ck_split_camel_case = "split_camel_case";
+static const auto ck_use_acronyms = "use_acronyms";
 
 const map<QString, QStringList> PluginBase::exec_args  // command > ExecArg
 {
@@ -90,20 +92,11 @@ QString PluginBase::defaultTrigger() const { return u"apps "_s; }
 
 void PluginBase::updateIndexItems()  { indexer.run(); }
 
-void PluginBase::commonInitialize(unique_ptr<QSettings> &s)
+void PluginBase::commonInitialize(const QSettings &s)
 {
-    restore_use_non_localized_name(s);
-    restore_split_camel_case(s);
-    restore_use_acronyms(s);
-
-    // Requires full scan
-    connect(this, &PluginBase::use_non_localized_name_changed,
-            this, &PluginBase::updateIndexItems);
-
-    // Require only to rebuild the index
-    for (auto f : {&PluginBase::split_camel_case_changed,
-                   &PluginBase::use_acronyms_changed})
-        connect(this, f, this, [this]{ setIndexItems(buildIndexItems()); });
+    use_non_localized_name_ = s.value(ck_use_non_localized_name, false).value<bool>();
+    split_camel_case_       = s.value(ck_split_camel_case, false).value<bool>();
+    use_acronyms_           = s.value(ck_use_acronyms, false).value<bool>();
 }
 
 void PluginBase::setUserTerminalFromConfig()
@@ -113,7 +106,7 @@ void PluginBase::setUserTerminalFromConfig()
         WARN << "No terminals available.";
         terminal = nullptr;
     }
-    else if (auto s = settings(); !s->contains(CFG_TERM))  // unconfigured
+    else if (auto s = settings(); !s->contains(ck_terminal))  // unconfigured
     {
         terminal = *terminals.begin();  // guaranteed to exist since not empty
         WARN << u"No terminal configured. Using %1."_s
@@ -121,7 +114,7 @@ void PluginBase::setUserTerminalFromConfig()
     }
     else  // user configured
     {
-        auto term_id = s->value(CFG_TERM).toString();
+        auto term_id = s->value(ck_terminal).toString();
         auto term_it = ranges::find_if(terminals, [&](const auto *t){ return t->id() == term_id; });
         if (term_it != terminals.end())
             terminal = *term_it;
@@ -171,7 +164,7 @@ QWidget *PluginBase::createTerminalFormWidget()
             it != terminals.end())
         {
             terminal = *it;
-            settings()->setValue(CFG_TERM, term_id);
+            settings()->setValue(ck_terminal, term_id);
             DEBG << "Terminal set to" << term_id;
         }
         else
@@ -197,27 +190,15 @@ void PluginBase::addBaseConfig(QFormLayout *l)
 {
     auto *cb = new QCheckBox;
     l->addRow(tr("Use non-localized name"), cb);
-    bind(cb,
-         this,
-         &PluginBase::use_non_localized_name,
-         &PluginBase::set_use_non_localized_name,
-         &PluginBase::use_non_localized_name_changed);
+    bindWidget(cb, this, &PluginBase::useNonLocalizedName, &PluginBase::setUseNonLocalizedName);
 
     cb = new QCheckBox;
     l->addRow(tr("Split CamelCase words (medial capital)"), cb);
-    bind(cb,
-         this,
-         &PluginBase::split_camel_case,
-         &PluginBase::set_split_camel_case,
-         &PluginBase::split_camel_case_changed);
+    bindWidget(cb, this, &PluginBase::splitCamelCase, &PluginBase::setSplitCamelCase);
 
     cb = new QCheckBox;
     l->addRow(tr("Use acronyms"), cb);
-    bind(cb,
-         this,
-         &PluginBase::use_acronyms,
-         &PluginBase::set_use_acronyms,
-         &PluginBase::use_acronyms_changed);
+    bindWidget(cb, this, &PluginBase::useAcronyms, &PluginBase::setUseAcronyms);
 
     l->addRow(tr("Terminal"), createTerminalFormWidget());
 }
@@ -278,3 +259,38 @@ void PluginBase::runTerminal(const QString &script) const
         warning(tr("No terminal available."));
 }
 
+bool PluginBase::useNonLocalizedName() const { return use_non_localized_name_; }
+
+void PluginBase::setUseNonLocalizedName(bool v)
+{
+    if (use_non_localized_name_ != v)
+    {
+        settings()->setValue(ck_use_non_localized_name, use_non_localized_name_);
+        use_non_localized_name_ = v;
+        updateIndexItems();
+    }
+}
+
+bool PluginBase::splitCamelCase() const { return split_camel_case_; }
+
+void PluginBase::setSplitCamelCase(bool v)
+{
+    if (split_camel_case_ != v)
+    {
+        settings()->setValue(ck_split_camel_case, split_camel_case_);
+        split_camel_case_ = v;
+        setIndexItems(buildIndexItems());
+    }
+}
+
+bool PluginBase::useAcronyms() const { return use_acronyms_; }
+
+void PluginBase::setUseAcronyms(bool v)
+{
+    if (use_acronyms_ != v)
+    {
+        settings()->setValue(ck_use_acronyms, use_acronyms_);
+        use_acronyms_ = v;
+        setIndexItems(buildIndexItems());
+    }
+}
