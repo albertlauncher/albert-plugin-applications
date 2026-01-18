@@ -3,7 +3,7 @@
 #include "application.h"
 #include <Cocoa/Cocoa.h>
 #include <QFileInfo>
-#include <albert/iconutil.h>
+#include <albert/icon.h>
 #include <albert/logging.h>
 #include <albert/systemutil.h>
 using namespace albert;
@@ -119,6 +119,6 @@ Application::Application(const QString &path, bool use_non_localized_name)
 
 QString Application::subtext() const { return path_; }
 
-unique_ptr<Icon> Application::icon() const { return makeFileTypeIcon(path_); }
+unique_ptr<Icon> Application::icon() const { return Icon::fileType(path_); }
 
 void Application::launch() const { runDetachedProcess({QStringLiteral("open"), path_}); }

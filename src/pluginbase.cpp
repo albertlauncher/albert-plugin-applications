@@ -10,15 +10,15 @@
 #include <QSignalBlocker>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <albert/iconutil.h>
+#include <albert/icon.h>
 #include <albert/indexitem.h>
 #include <albert/logging.h>
 #include <albert/messagebox.h>
 #include <albert/widgetsutil.h>
+ALBERT_LOGGING_CATEGORY("apps")
 using namespace Qt::StringLiterals;
 using namespace albert;
 using namespace std;
-ALBERT_LOGGING_CATEGORY("apps")
 
 static const auto ck_terminal = "terminal";
 static const auto ck_use_non_localized_name = "use_non_localized_name";
@@ -146,7 +146,7 @@ QWidget *PluginBase::createTerminalFormWidget()
         for (uint i = 0; i < sorted_terminals.size(); ++i)
         {
             const auto t = sorted_terminals.at(i);
-            cb->addItem(qIcon(t->icon()), t->name(), t->id());
+            cb->addItem(Icon::qIcon(t->icon()), t->name(), t->id());
             cb->setItemData(i, t->id(), Qt::ToolTipRole);
             if (t->id() == terminal->id())  // is current
                 cb->setCurrentIndex(i);

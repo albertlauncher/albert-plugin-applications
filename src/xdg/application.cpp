@@ -4,7 +4,7 @@
 #include "plugin.h"
 #include <QFileInfo>
 #include <albert/desktopentryparser.h>
-#include <albert/iconutil.h>
+#include <albert/icon.h>
 #include <albert/logging.h>
 #include <albert/systemutil.h>
 #include <ranges>
@@ -192,9 +192,9 @@ QString Application::subtext() const { return description_; }
 unique_ptr<Icon> Application::icon() const
 {
     if (QFileInfo(icon_).isAbsolute())
-        return makeImageIcon(icon_);
+        return Icon::image(icon_);
     else
-        return makeThemeIcon(icon_);
+        return Icon::theme(icon_);
 }
 
 vector<Action> Application::actions() const
