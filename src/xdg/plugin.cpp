@@ -71,7 +71,7 @@ Plugin::Plugin()
     // Load settings
 
     const auto s = settings();
-    // commonInitialize(*s); !??!?!
+    commonInitialize(*s);
     ignore_show_in_keys_ = s->value(ck_ignore_show_in_keys, true).value<bool>();
     use_exec_            = s->value(ck_use_exec, false).value<bool>();
     use_generic_name_    = s->value(ck_use_generic_name, false).value<bool>();
@@ -193,25 +193,25 @@ QWidget *Plugin::buildConfigWidget()
     Ui::ConfigWidget ui;
     ui.setupUi(widget);
 
-    bind(ui.checkBox_ignoreShowInKeys,
-         this,
-         &Plugin::ignoreShowInKeys,
-         &Plugin::setIgnoreShowInKeys);
+    bindWidget(ui.checkBox_ignoreShowInKeys,
+               this,
+               &Plugin::ignoreShowInKeys,
+               &Plugin::setIgnoreShowInKeys);
 
-    bind(ui.checkBox_useExec,
-         this,
-         &Plugin::useExec,
-         &Plugin::setUseExec);
+    bindWidget(ui.checkBox_useExec,
+               this,
+               &Plugin::useExec,
+               &Plugin::setUseExec);
 
-    bind(ui.checkBox_useGenericName,
-         this,
-         &Plugin::useGenericName,
-         &Plugin::setUseGenericName);
+    bindWidget(ui.checkBox_useGenericName,
+               this,
+               &Plugin::useGenericName,
+               &Plugin::setUseGenericName);
 
-    bind(ui.checkBox_useKeywords,
-         this,
-         &Plugin::useKeywords,
-         &Plugin::setUseKeywords);
+    bindWidget(ui.checkBox_useKeywords,
+               this,
+               &Plugin::useKeywords,
+               &Plugin::setUseKeywords);
 
     addBaseConfig(ui.formLayout);
 
@@ -240,9 +240,9 @@ bool Plugin::ignoreShowInKeys() const { return ignore_show_in_keys_; }
 
 void Plugin::setIgnoreShowInKeys(bool v)
 {
-    if (use_acronyms_ != v)
+    if (ignore_show_in_keys_ != v)
     {
-        settings()->setValue(ck_ignore_show_in_keys, ignore_show_in_keys_);
+        settings()->setValue(ck_ignore_show_in_keys, v);
         ignore_show_in_keys_ = v;
         updateIndexItems();
     }
@@ -252,9 +252,9 @@ bool Plugin::useExec() const { return use_exec_; }
 
 void Plugin::setUseExec(bool v)
 {
-    if (use_acronyms_ != v)
+    if (use_exec_ != v)
     {
-        settings()->setValue(ck_use_exec, use_exec_);
+        settings()->setValue(ck_use_exec, v);
         use_exec_ = v;
         updateIndexItems();
     }
@@ -264,9 +264,9 @@ bool Plugin::useGenericName() const { return use_generic_name_; }
 
 void Plugin::setUseGenericName(bool v)
 {
-    if (use_acronyms_ != v)
+    if (use_generic_name_ != v)
     {
-        settings()->setValue(ck_use_generic_name, use_generic_name_);
+        settings()->setValue(ck_use_generic_name, v);
         use_generic_name_ = v;
         updateIndexItems();
     }
@@ -276,9 +276,9 @@ bool Plugin::useKeywords() const { return use_keywords_; }
 
 void Plugin::setUseKeywords(bool v)
 {
-    if (use_acronyms_ != v)
+    if (use_keywords_ != v)
     {
-        settings()->setValue(ck_use_keywords, use_keywords_);
+        settings()->setValue(ck_use_keywords, v);
         use_keywords_ = v;
         updateIndexItems();
     }

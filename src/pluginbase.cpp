@@ -265,7 +265,7 @@ void PluginBase::setUseNonLocalizedName(bool v)
 {
     if (use_non_localized_name_ != v)
     {
-        settings()->setValue(ck_use_non_localized_name, use_non_localized_name_);
+        settings()->setValue(ck_use_non_localized_name, v);
         use_non_localized_name_ = v;
         updateIndexItems();
     }
@@ -277,7 +277,7 @@ void PluginBase::setSplitCamelCase(bool v)
 {
     if (split_camel_case_ != v)
     {
-        settings()->setValue(ck_split_camel_case, split_camel_case_);
+        settings()->setValue(ck_split_camel_case, v);
         split_camel_case_ = v;
         setIndexItems(buildIndexItems());
     }
@@ -289,7 +289,7 @@ void PluginBase::setUseAcronyms(bool v)
 {
     if (use_acronyms_ != v)
     {
-        settings()->setValue(ck_use_acronyms, use_acronyms_);
+        settings()->setValue(ck_use_acronyms, v);
         use_acronyms_ = v;
         setIndexItems(buildIndexItems());
     }
