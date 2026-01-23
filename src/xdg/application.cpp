@@ -312,7 +312,7 @@ optional<QStringList> Application::splitExecWithEscapedSpaces(const QString &s) 
                 else if (*c == u'\\')  // escape inside quotes
                 {
                     ++c;
-                    if(c == s.end())
+                    if (c == s.end())
                     {
                         WARN << u"Unterminated escape in %1"_s.arg(s);
                         return {};  // unterminated escape
