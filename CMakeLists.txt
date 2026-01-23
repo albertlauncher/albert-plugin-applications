@@ -32,8 +32,6 @@ if(APPLE)
         src/mac/application.h
         src/mac/plugin.cpp
         src/mac/plugin.h
-        src/mac/terminal.cpp
-        src/mac/terminal.h
     )
 elseif(UNIX)
     target_include_directories(${PROJECT_NAME} PRIVATE src/xdg)

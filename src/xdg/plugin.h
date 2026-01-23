@@ -1,9 +1,10 @@
-// Copyright (c) 2022-2025 Manuel Schneider
+// Copyright (c) 2022-2026 Manuel Schneider
 
 #pragma once
 #include "pluginbase.h"
 #include <QStringList>
 #include <albert/telemetryprovider.h>
+class Terminal;
 
 class Plugin : public PluginBase,
                public albert::detail::TelemetryProvider
@@ -21,8 +22,7 @@ public:
     // albert::TelemetryProvider
     QJsonObject telemetryData() const override;
 
-    using PluginBase::runTerminal;
-
+    void runTerminal(const QString &script) const override;
     void runTerminal(QStringList commandline, const QString working_dir = {}) const;
 
     bool ignoreShowInKeys() const;
@@ -39,6 +39,12 @@ public:
 
 private:
 
+    static const std::map<QString, QStringList> exec_args;
+
+    QWidget *createTerminalFormWidget();
+
+    std::vector<Terminal*> terminals;
+    Terminal* terminal = nullptr;
     bool ignore_show_in_keys_;
     bool use_exec_;
     bool use_generic_name_;
