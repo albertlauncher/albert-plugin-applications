@@ -70,7 +70,7 @@ Application::Application(const QString &id, const QString &path, ParseOptions po
     // Exec - string, REQUIRED despite not strictly by standard
     try
     {
-        exec_ = DesktopEntryParser::splitExec(p.getString(root_section, u"Exec"_s)).value();
+        exec_ = splitExecWithEscapedSpaces(p.getString(root_section, u"Exec"_s)).value();
         if (exec_.isEmpty())
             throw runtime_error("Empty Exec value.");
     }
@@ -148,7 +148,7 @@ Application::Application(const QString &id, const QString &path, ParseOptions po
                     action_id,
                     p.getLocaleString(action_section, u"Name"_s), // Name - localestring, REQUIRED
                     [this, &p, &action_section]{
-                        auto exec = DesktopEntryParser::splitExec(p.getString(action_section, u"Exec"_s));
+                        auto exec = splitExecWithEscapedSpaces(p.getString(action_section, u"Exec"_s));
                         if (!exec)
                             throw runtime_error("Malformed Exec value.");
                         else if (exec.value().isEmpty())
@@ -162,7 +162,7 @@ Application::Application(const QString &id, const QString &path, ParseOptions po
                 auto name = p.getLocaleString(action_section, u"Name"_s);
 
                 // Exec - string, REQUIRED despite not strictly by standard
-                auto exec = DesktopEntryParser::splitExec(p.getString(action_section, u"Exec"_s));
+                auto exec = splitExecWithEscapedSpaces(p.getString(action_section, u"Exec"_s));
                 if (!exec)
                     throw runtime_error("Malformed Exec value.");
                 else if (exec.value().isEmpty())
@@ -281,4 +281,91 @@ QStringList Application::fieldCodesExpanded(const QStringList &exec, QUrl url) c
             c << t;
     }
     return c;
+}
+
+optional<QStringList> Application::splitExecWithEscapedSpaces(const QString &s) noexcept
+{
+    QStringList tokens;
+    QString token;
+    auto c = s.begin();
+
+    while (c != s.end())
+    {
+        if (*c == QChar::Space)  // separator
+        {
+            if (!token.isEmpty())
+            {
+                tokens << token;
+                token.clear();
+            }
+        }
+
+        else if (*c == u'"')  // quote
+        {
+            ++c;
+
+            while (c != s.end())
+            {
+                if (*c == u'"')  // quote termination
+                    break;
+
+                else if (*c == u'\\')  // escape inside quotes
+                {
+                    ++c;
+                    if(c == s.end())
+                    {
+                        WARN << u"Unterminated escape in %1"_s.arg(s);
+                        return {};  // unterminated escape
+                    }
+
+                    else if (uR"("`$\)"_s.contains(*c))
+                        token.append(*c);
+
+                    else
+                    {
+                        WARN << u"Invalid escape '%1' in quoted string: %2"_s.arg(*c).arg(s);
+                        return {};  // invalid escape
+                    }
+                }
+
+                else
+                    token.append(*c);  // regular char
+
+                ++c;
+            }
+
+            if (c == s.end())
+            {
+                WARN << u"Unterminated quote in %1"_s.arg(s);
+                return {};  // unterminated quote
+            }
+        }
+
+        else if (*c == u'\\')  // escape outside quotes
+        {
+            ++c;
+            if (c == s.end())
+            {
+                WARN << u"Unterminated escape at end of string: %1"_s.arg(s);
+                return {};  // unterminated escape
+            }
+            
+            // According to desktop entry spec, outside quotes we need to handle:
+            // - \\ (backslash) becomes a single backslash
+            // - \  (backslash space) becomes a literal space (not a separator)
+            // For simplicity and compatibility, treat any escaped character as literal
+            token.append(*c);
+        }
+
+        else
+            token.append(*c);  // regular char
+
+        ++c;
+
+    }
+
+    if (!token.isEmpty())
+        tokens << token;
+
+    return tokens;
 }

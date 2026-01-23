@@ -46,6 +46,9 @@ private:
 
     QStringList fieldCodesExpanded(const QStringList &exec, QUrl url = {}) const;
 
+    /// Split an Exec string according to desktop entry spec with proper escaped space handling
+    static std::optional<QStringList> splitExecWithEscapedSpaces(const QString &s) noexcept;
+
     QString description_;
     QString icon_;
     QStringList exec_;
