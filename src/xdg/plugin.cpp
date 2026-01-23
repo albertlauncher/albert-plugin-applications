@@ -38,7 +38,7 @@ const map<QString, QStringList> Plugin::exec_args  // command > ExecArg
     // {"com.github.amezin.ddterm", {}},
     {u"contour"_s, {u"--"_s}},
     {u"cool-retro-term"_s, {u"-e"_s}},
-    // {"cosmic-term", {}},
+    {u"cosmic-term"_s, {u"-e"_s}},
     {u"deepin-terminal"_s, {u"-e"_s}},
     // {"deepin-terminal-gtk", {u"-e"_s}},  // archived
     // {"domterm", {}},
