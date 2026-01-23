@@ -229,30 +229,35 @@ void Application::launchExec(const QStringList &exec, QUrl url, const QString &w
         commandline = prefix + commandline;
 
     // Preserve environment variables for pkexec and similar tools that need display/DBus access
-    if (!commandline.isEmpty() && 
-        (commandline.first().endsWith(u"pkexec"_s) || 
-         commandline.first().contains(u"/pkexec"_s)))
+    if (!commandline.isEmpty())
     {
-        QStringList env_vars;
+        // Extract the basename to check if it's pkexec
+        auto cmd = commandline.first();
+        auto basename = cmd.split(u'/').last();
         
-        // Preserve DISPLAY for X11/Wayland GUI authentication dialogs
-        if (auto display = qEnvironmentVariable("DISPLAY"); !display.isEmpty())
-            env_vars << u"DISPLAY=%1"_s.arg(display);
-        
-        // Preserve XAUTHORITY for X11 authentication
-        if (auto xauth = qEnvironmentVariable("XAUTHORITY"); !xauth.isEmpty())
-            env_vars << u"XAUTHORITY=%1"_s.arg(xauth);
-        
-        // Preserve WAYLAND_DISPLAY for Wayland sessions
-        if (auto wayland = qEnvironmentVariable("WAYLAND_DISPLAY"); !wayland.isEmpty())
-            env_vars << u"WAYLAND_DISPLAY=%1"_s.arg(wayland);
-        
-        // Preserve DBus session bus for PolicyKit communication
-        if (auto dbus = qEnvironmentVariable("DBUS_SESSION_BUS_ADDRESS"); !dbus.isEmpty())
-            env_vars << u"DBUS_SESSION_BUS_ADDRESS=%1"_s.arg(dbus);
-        
-        if (!env_vars.isEmpty())
-            commandline = QStringList{u"env"_s} + env_vars + commandline;
+        if (basename == u"pkexec"_s)
+        {
+            QStringList env_vars;
+            
+            // Preserve DISPLAY for X11/Wayland GUI authentication dialogs
+            if (auto display = qEnvironmentVariable("DISPLAY"); !display.isEmpty())
+                env_vars << u"DISPLAY=%1"_s.arg(display);
+            
+            // Preserve XAUTHORITY for X11 authentication
+            if (auto xauth = qEnvironmentVariable("XAUTHORITY"); !xauth.isEmpty())
+                env_vars << u"XAUTHORITY=%1"_s.arg(xauth);
+            
+            // Preserve WAYLAND_DISPLAY for Wayland sessions
+            if (auto wayland = qEnvironmentVariable("WAYLAND_DISPLAY"); !wayland.isEmpty())
+                env_vars << u"WAYLAND_DISPLAY=%1"_s.arg(wayland);
+            
+            // Preserve DBus session bus for PolicyKit communication
+            if (auto dbus = qEnvironmentVariable("DBUS_SESSION_BUS_ADDRESS"); !dbus.isEmpty())
+                env_vars << u"DBUS_SESSION_BUS_ADDRESS=%1"_s.arg(dbus);
+            
+            if (!env_vars.isEmpty())
+                commandline = QStringList{u"env"_s} + env_vars + commandline;
+        }
     }
 
     if (term_)
