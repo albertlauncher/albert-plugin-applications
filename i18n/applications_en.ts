@@ -37,9 +37,22 @@
         <source>Open desktop entry</source>
         <translation></translation>
     </message>
-</context>
-<context>
-    <name>PluginBase</name>
+    <message>
+        <source>Failed to run terminal with script: getpwuid(…) failed.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Failed to run terminal with script: Script is empty.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Failed to run terminal with script: Could not create temporary script file.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Terminal</source>
+        <translation></translation>
+    </message>
     <message>
         <source>Report missing terminals &lt;a href=&quot;%1&quot;&gt;here&lt;/a&gt;.</source>
         <translation></translation>
@@ -48,10 +61,9 @@
         <source>No terminal available.</source>
         <translation></translation>
     </message>
-    <message>
-        <source>Terminal</source>
-        <translation></translation>
-    </message>
+</context>
+<context>
+    <name>PluginBase</name>
     <message>
         <source>Split CamelCase words (medial capital)</source>
         <translation></translation>
@@ -73,10 +85,6 @@
     </message>
     <message>
         <source>Failed to run terminal with script: Script is empty.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Failed to run terminal with script: Could not create temporary script file.</source>
         <translation></translation>
     </message>
 </context>

@@ -37,9 +37,22 @@
         <source>Open desktop entry</source>
         <translation>Desktop Entry öffnen</translation>
     </message>
-</context>
-<context>
-    <name>PluginBase</name>
+    <message>
+        <source>Failed to run terminal with script: getpwuid(…) failed.</source>
+        <translation>Fehler beim Ausführen des Terminals mit Skript: getpwuid(…) fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <source>Failed to run terminal with script: Script is empty.</source>
+        <translation>Fehler beim Ausführen des Terminals mit Skript: Skript ist leer.</translation>
+    </message>
+    <message>
+        <source>Failed to run terminal with script: Could not create temporary script file.</source>
+        <translation>Fehler beim Ausführen des Terminals mit Skript: Temporäre Skriptdatei konnte nicht erstellt werden.</translation>
+    </message>
+    <message>
+        <source>Terminal</source>
+        <translation>Terminal</translation>
+    </message>
     <message>
         <source>Report missing terminals &lt;a href=&quot;%1&quot;&gt;here&lt;/a&gt;.</source>
         <translation>Fehlende Terminals &lt;a href=&quot;%1&quot;&gt;melden&lt;/a&gt;.</translation>
@@ -48,10 +61,9 @@
         <source>No terminal available.</source>
         <translation>Kein Terminal verfügbar.</translation>
     </message>
-    <message>
-        <source>Terminal</source>
-        <translation>Terminal</translation>
-    </message>
+</context>
+<context>
+    <name>PluginBase</name>
     <message>
         <source>Split CamelCase words (medial capital)</source>
         <translation>CamelCase trennen (Binnenmajuskel)</translation>
@@ -74,10 +86,6 @@
     <message>
         <source>Failed to run terminal with script: Script is empty.</source>
         <translation>Fehler beim Ausführen des Terminals mit Skript: Skript ist leer.</translation>
-    </message>
-    <message>
-        <source>Failed to run terminal with script: Could not create temporary script file.</source>
-        <translation>Fehler beim Ausführen des Terminals mit Skript: Temporäre Skriptdatei konnte nicht erstellt werden.</translation>
     </message>
 </context>
 </TS>
