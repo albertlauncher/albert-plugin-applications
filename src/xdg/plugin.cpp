@@ -49,7 +49,7 @@ const map<QString, QStringList> Plugin::exec_args  // command > ExecArg
     // {"gmrun", {}},
     {u"gnome-terminal"_s, {u"--"_s}},
     {u"ghostty"_s, {u"-e"_s}},
-    // {"guake", {}},
+    {u"guake"_s,  {u"-e"_s}},
     // {"hyper", {}},
     {u"io.elementary.terminal"_s, {u"-x"_s}},
     {u"kgx"_s, {u"-e"_s}},
