@@ -252,7 +252,7 @@ Plugin::Plugin()
             WARN << "No terminals available.";
             terminal = nullptr;
         }
-        else if (auto s = settings(); !s->contains(ck_terminal))  // unconfigured
+        else if (auto sett = settings(); !sett->contains(ck_terminal))  // unconfigured
         {
             terminal = *terminals.begin();  // guaranteed to exist since not empty
             WARN << u"No terminal configured. Using %1."_s
@@ -260,7 +260,7 @@ Plugin::Plugin()
         }
         else  // user configured
         {
-            auto term_id = s->value(ck_terminal).toString();
+            auto term_id = sett->value(ck_terminal).toString();
             auto term_it = ranges::find_if(terminals, [&](const auto *t){ return t->id() == term_id; });
             if (term_it != terminals.end())
                 terminal = *term_it;
