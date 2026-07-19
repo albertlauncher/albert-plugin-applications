@@ -112,7 +112,7 @@ void Plugin::runTerminal(const QString &script) const
         warning(tr(msg));
     }
 
-    else if (QFile file(App::cacheLocation() / "terminal.command");
+    else if (QFile file(app().cacheLocation() / "terminal.command");
              !file.open(QIODevice::WriteOnly))
     {
         const char *msg = QT_TR_NOOP("Failed to run terminal with script: "
