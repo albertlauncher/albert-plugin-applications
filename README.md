@@ -32,6 +32,13 @@ data. Due to the lack of a standardized terminal command execution mechanism the
 based on a **hardcoded heuristic**. If you want to change this read [issue #1][xte-issue] and vote
 on the mentioned proposal.
 
+#### PolicyKit (pkexec) Support
+
+Applications that use `pkexec` to run with elevated privileges are automatically supported. The plugin
+preserves necessary environment variables (`DISPLAY`, `XAUTHORITY`, `WAYLAND_DISPLAY`, `DBUS_SESSION_BUS_ADDRESS`)
+when launching pkexec-based applications, ensuring authentication dialogs display properly in both X11 and
+Wayland sessions.
+
 [foundation-nsbundle]: https://developer.apple.com/documentation/foundation/bundle
 [destop-entry-spec]: https://specifications.freedesktop.org/desktop-entry-spec/latest/
 [xte-issue]: https://github.com/albertlauncher/albert-plugin-applications/issues/1
