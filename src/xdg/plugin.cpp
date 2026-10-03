@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QIcon>
 #include <QLabel>
 #include <QRegularExpression>
 #include <QSettings>
@@ -154,7 +155,13 @@ Plugin::Plugin()
             fs_watcher.addPath(QFileInfo(dit.next()).canonicalFilePath());
 
     connect(&fs_watcher, &QFileSystemWatcher::directoryChanged,
-            this, [this](){ indexer.run(); });
+            this, [this](){
+                // Qt mmaps GTK icon-theme.cache when the QIconTheme is first constructed
+                // and trusts it for the QApplication lifetime. Force a theme list rebuild
+                // so icons of newly installed apps are not hidden by the stale cache.
+                QIcon::setThemeSearchPaths(QIcon::themeSearchPaths());
+                indexer.run();
+            });
 
 
     // Indexer
